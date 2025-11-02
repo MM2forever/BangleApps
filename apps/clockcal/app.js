@@ -24,7 +24,7 @@ const CAL_Y = h - s.CAL_ROWS * CELL_H;
 const DEBUG = false;
 var state = "watch";
 var monthOffset = 0;
-
+var locale = require("locale"); //CM
 // FIXME: These variables should maybe be defined inside relevant functions below. The linter complained they were not defined (i.e. they were added to global scope if I understand correctly).
 let dayInterval;
 let secondInterval;
@@ -133,9 +133,9 @@ function caldrawNormal(rDate, c) {
 function drawMinutes() {
     if (DEBUG) console.log("|-->minutes");
     var d = new Date();
-    var hours = s.MODE24 ? d.getHours().toString().padStart(2, ' ') : ((d.getHours() + 24) % 12 || 12).toString().padStart(2, ' ');
+    var hours = s.MODE24 ? d.getHours().toString().padStart(2, '0') : ((d.getHours() + 24) % 12 || 12).toString().padStart(2, ' ');
     var minutes = d.getMinutes().toString().padStart(2, '0');
-    var textColor = NRF.getSecurityStatus().connected ? '#fff' : '#f00';
+    var textColor = NRF.getSecurityStatus().connected ? '#99f' : '#fff';
     var size = 50;
     var clock_x = (w - 20) / 2;
     if (dimSeconds) {
@@ -150,6 +150,10 @@ function drawMinutes() {
     var nextminute = (61 - d.getSeconds());
     if (typeof minuteInterval !== "undefined") clearTimeout(minuteInterval);
     minuteInterval = setTimeout(drawMinutes, nextminute * 1000);
+    //CM Date
+    g.setFont("Vector", 10);
+    d = new Date();
+    g.drawString(locale.dow(d) + ' ' + locale.date(d,1), 88, CAL_Y - 5, 1);
 }
 
 function drawSeconds() {
